@@ -1,11 +1,22 @@
-# Implementação da atividade concluída por Matheus Souza
-# Curso: Análise e Desenvolvimento de Sistemas
-# menu_principal(estudantes): função que exibe o menu principal do sistema e permite a escolha das opções. A função recebe uma lista de estudantes como parâmetro e encaminha a opção selecionada para a função correspondente.
-# incluir_estudante(estudantes): função que realiza a inclusão de um novo estudante na lista de estudantes. A função solicita ao usuário o nome, código e CPF do estudante e cria um dicionário com essas informações, que é adicionado à lista de estudantes.
-# listar_estudantes(estudantes): função que lista todos os estudantes cadastrados na lista de estudantes. Se não houver estudantes cadastrados, a função exibe uma mensagem informando isso.
-# atualizar_estudante(estudantes): função que permite a atualização das informações de um estudante cadastrado na lista de estudantes. A função solicita ao usuário o código do estudante a ser atualizado e, em seguida, permite a atualização do nome e CPF do estudante selecionado.
-# excluir_estudante(estudantes): função que permite a exclusão de um estudante da lista de estudantes. A função solicita ao usuário o código do estudante a ser excluído e, em seguida, remove o estudante da lista.
-# menu_estudantes(estudantes): função que exibe o menu de operações para os estudantes e permite a escolha das opções. A função recebe uma lista de estudantes como parâmetro e encaminha a opção selecionada para a função correspondente. As opções incluem inclusão, listagem, atualização e exclusão de estudantes. A opção "0" retorna para o menu principal.
+import json
+import time
+
+def salvar_estudantes(estudantes):
+    with open('estudantes.json', 'w') as file:
+        json.dump(estudantes, file)
+    print('Lista de estudantes salva com sucesso.')
+
+import json
+
+def carregar_estudantes():
+    try:
+        with open('estudantes.json', 'r') as file:
+            estudantes = json.load(file)
+    except FileNotFoundError:
+        estudantes = []
+    return estudantes
+
+import json
 
 def menu_principal(estudantes): 
     while True:
@@ -60,32 +71,75 @@ def incluir_estudante(estudantes):
     print('\n==== INCLUSÃO ====\n')
     nome_estudante = input('Digite o nome do estudante: ')
     cod_estudante = int(input('\nCódigo do Estudante: '))
-    cpf_estudante = str(input('\nDigite o CPF do Estudante: '))
-    input('\nPressione ENTER para continuar')
+    cpf_estudante = input('\nDigite o CPF do Estudante: ')
+    input('\nPressione ENTER para continuar ')
+    print('Incluindo usuário, aguarde...')
+    time.sleep(1)
+
+    # verificar se o novo código já está em uso
+    for estudante in estudantes:
+        if estudante['codigo'] == cod_estudante:
+            print('Erro: código já existente!')
+            return
+
+    # criar um novo estudante com as informações fornecidas
     informacoes_estudante = {"codigo": cod_estudante, "nome": nome_estudante, "cpf": cpf_estudante}
+
+    # adicionar o novo estudante à lista
     estudantes.append(informacoes_estudante)
+
+    # salvar a lista atualizada
+    salvar_estudantes(estudantes)
+
     print('Estudante cadastrado com sucesso.')
 
 def listar_estudantes(estudantes):
+    print('Coletando Informações, aguarde...')
+    time.sleep(2)
     if len(estudantes) == 0:
         print('Não há estudantes cadastrados')
     else:
         print('\n---LISTAGEM---\n')
-    for estudante in estudantes:
-        print(estudante)
-    input('Pressione ENTER para continuar')
+        for estudante in estudantes:
+            print(estudante)
+        input('Pressione ENTER para continuar ')
+        
+
 
 def atualizar_estudante(estudantes):
     print('\n==== ATUALIZAÇÃO ====\n')
     codigo = int(input('Digite o código do estudante que deseja atualizar: '))
+
+    # procurar pelo estudante com o código fornecido
     for estudante in estudantes:
         if estudante['codigo'] == codigo:
+            # obter os novos valores do usuário
             nome_estudante = input('Digite o novo nome do estudante: ')
             cpf_estudante = input('Digite o novo CPF do estudante: ')
-            estudante['nome'] = nome_estudante
-            estudante['cpf'] = cpf_estudante
-            print(f'Estudante {codigo} atualizado com sucesso!')
-            break
+
+            # verificar se os campos não estão vazios
+            if nome_estudante and cpf_estudante:
+                # verificar se o novo código já está em uso
+                novo_codigo = int(input('Digite o novo código do estudante: '))
+                print('Atualizando dados do usuário, aguarde...')
+                time.sleep(2)
+                for outro_estudante in estudantes:
+                    if outro_estudante['codigo'] == novo_codigo and outro_estudante != estudante:
+                        print('Erro: código já existente!')
+                        return
+
+                # atualizar os valores do estudante
+                estudante['nome'] = nome_estudante
+                estudante['cpf'] = cpf_estudante
+                estudante['codigo'] = novo_codigo
+                
+
+                print(f'Estudante {codigo} atualizado com sucesso!')
+                salvar_estudantes(estudantes)
+                break
+            else:
+                print('Erro: todos os campos devem ser preenchidos!')
+                return
     else:
         print(f'Não foi encontrado nenhum estudante com o código {codigo}.')
 
@@ -95,13 +149,27 @@ def excluir_estudante(estudantes):
     for estudante in estudantes:
         if estudante['codigo'] == codigo:
             estudantes.remove(estudante)
+            input(f'Você deseja excluir o usuário {estudante}? Para confirmar aperte ENTER. ')
+            print('Excluindo Estudante, aguarde...')
+            time.sleep(2)
             print(f'Estudante {codigo} excluído com sucesso!')
+            salvar_estudantes(estudantes)
             break
     else:
         print(f'Não foi encontrado nenhum estudante com o código {codigo}.')
 
-estudantes = []
+def salvar_estudantes(estudantes):
+    with open('estudantes.json', 'w') as f:
+        json.dump(estudantes, f)
+
+def recuperar_estudantes():
+    try:
+        with open('estudantes.json', 'r') as f:
+            estudantes = json.load(f)
+    except FileNotFoundError:
+        estudantes = []
+    return estudantes
+
+estudantes = recuperar_estudantes()
 
 menu_principal(estudantes)
-
-
