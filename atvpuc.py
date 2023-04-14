@@ -76,19 +76,16 @@ def incluir_estudante(estudantes):
     print('Incluindo usuário, aguarde...')
     time.sleep(1)
 
-    # verificar se o novo código já está em uso
+ 
     for estudante in estudantes:
         if estudante['codigo'] == cod_estudante:
             print('Erro: código já existente!')
             return
 
-    # criar um novo estudante com as informações fornecidas
     informacoes_estudante = {"codigo": cod_estudante, "nome": nome_estudante, "cpf": cpf_estudante}
 
-    # adicionar o novo estudante à lista
     estudantes.append(informacoes_estudante)
 
-    # salvar a lista atualizada
     salvar_estudantes(estudantes)
 
     print('Estudante cadastrado com sucesso.')
@@ -110,16 +107,12 @@ def atualizar_estudante(estudantes):
     print('\n==== ATUALIZAÇÃO ====\n')
     codigo = int(input('Digite o código do estudante que deseja atualizar: '))
 
-    # procurar pelo estudante com o código fornecido
     for estudante in estudantes:
         if estudante['codigo'] == codigo:
-            # obter os novos valores do usuário
             nome_estudante = input('Digite o novo nome do estudante: ')
             cpf_estudante = input('Digite o novo CPF do estudante: ')
 
-            # verificar se os campos não estão vazios
             if nome_estudante and cpf_estudante:
-                # verificar se o novo código já está em uso
                 novo_codigo = int(input('Digite o novo código do estudante: '))
                 print('Atualizando dados do usuário, aguarde...')
                 time.sleep(2)
@@ -128,7 +121,6 @@ def atualizar_estudante(estudantes):
                         print('Erro: código já existente!')
                         return
 
-                # atualizar os valores do estudante
                 estudante['nome'] = nome_estudante
                 estudante['cpf'] = cpf_estudante
                 estudante['codigo'] = novo_codigo
