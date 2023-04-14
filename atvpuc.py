@@ -1,3 +1,6 @@
+# Implementação da atividade concluída por Matheus Souza
+# Curso: Análise e Desenvolvimento de Sistemas
+
 import json
 import time
 
@@ -76,7 +79,6 @@ def incluir_estudante(estudantes):
     print('Incluindo usuário, aguarde...')
     time.sleep(1)
 
- 
     for estudante in estudantes:
         if estudante['codigo'] == cod_estudante:
             print('Erro: código já existente!')
@@ -101,8 +103,6 @@ def listar_estudantes(estudantes):
             print(estudante)
         input('Pressione ENTER para continuar ')
         
-
-
 def atualizar_estudante(estudantes):
     print('\n==== ATUALIZAÇÃO ====\n')
     codigo = int(input('Digite o código do estudante que deseja atualizar: '))
